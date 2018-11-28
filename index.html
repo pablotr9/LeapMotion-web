@@ -1,0 +1,245 @@
+<html>
+<head>
+  <title>Touch Free BAS</title>
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet">
+  <script src="leap-0.6.4.js"></script>
+  <script src="lib/leap-plugins-0.1.6.js"></script>
+  <script src="lib/three.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+  <style>
+    @keyframes fadeIn {
+      from {
+        background-color: rgba(94, 94, 94, 0.2);
+      }
+
+      to {
+        background-color: rgba(235, 235, 235, 1);
+      }
+    }
+
+    @keyframes fadeOut {
+      from {
+        background-color: rgba(235, 235, 235, 1);
+      }
+
+      to {
+        background-color: rgba(94, 94, 94, 0.2);
+      }
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Ubuntu', sans-serif;
+      background-color: black;
+      color: white;
+    }
+
+    #huecoArriba {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      z-index: 10;
+      background: #9b9b9b;
+    }
+
+    #rendererDiv {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      min-width: 250px;
+      min-height: 250px;
+      border: 1px solid black;
+      background-color: #ebebeb;
+    }
+
+    canvas {
+      z-index: 1000;
+    }
+
+    #main_menu {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 30%;
+      width: 100%;
+      height: 100%;
+      z-index: 100;
+      background: black;
+      background: -moz-linear-gradient(top, #9b9b9b 0%, gray 20%, black 100%);
+      /* FF3.6-15 */
+      background: -webkit-linear-gradient(top, #9b9b9b 0%, gray 20%, black 100%);
+      /* Chrome10-25,Safari5.1-6 */
+      background: linear-gradient(to bottom, #9b9b9b 0%, gray 20%, black 100%);
+      /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+      filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#9b9b9b', endColorstr='gray', GradientType=0);
+      /* IE6-9 */
+    }
+
+    #main_menu ul {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      z-index: 1000;
+      list-style: none;
+    }
+
+    #main_menu ul li {
+      height: 10%;
+      color: white;
+      display: flex;
+    }
+
+    #main_menu ul li a {
+      font-size: 1.8em;
+      text-decoration: none;
+      width: 60%;
+      min-width: 500px;
+      display: block;
+      margin: auto;
+      border-radius: 15px;
+      color: white;
+    }
+
+    #main_menu ul li a:visited {
+      color: lightblue;
+    }
+
+    #main_menu ul li.hover a {
+      background-color: ebebeb;
+      color: black !important;
+      -webkit-box-shadow: 0px 6px 5px 0px rgba(100, 100, 100, 0.75);
+      -moz-box-shadow: 0px 6px 5px 0px rgba(100, 100, 100, 0.75);
+      box-shadow: 0px 6px 5px 0px rgba(100, 100, 100, 0.75);
+      animation-name: fadeIn;
+      animation-duration: 1s;
+    }
+
+    .fadeOut {
+      animation-name: fadeOut;
+      animation-duration: 1s;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="huecoArriba">
+    <div id="main_menu">
+      <ul>
+        <li><a href="prueba1.html">Prueba1</a></li>
+        <li><a href="#2">Prueba2</a></li>
+        <li><a href="#3">Prueba3</a></li>
+      </ul>
+    </div>
+  </div>
+</body>
+
+<script>
+  Number.prototype.map = function (in_min, in_max, out_min, out_max) {
+    return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+  }
+
+  
+  var isFullscreen = false;
+  var main_menu = null;
+  var menu_middle = 0;
+  var controlHandId = 0;
+  var controlHandActive = false;
+  var selectedOption = 1;
+  var lastSelectedOption = 0;
+  var fist = false;
+  var fingersExtended = 0;
+  var goneAway = false;
+  var mover = 1;
+
+  function setPos(num){
+    if(num <= 3 && num >= 1){
+      selectedOption = num;
+    }
+  }
+
+  
+
+ 
+  let count = 0;
+  Leap.loop({ background: true }, {
+    hand: function (hand) {
+      fingersExtended = 0;
+      for (var i = 0; i < 5; i++) {
+        fingersExtended += hand.fingers[i].extended;
+      }
+
+      //console.log(fingersExtended);
+
+      if (!fingersExtended) { fist = true; } else { fist = false; }
+
+
+      controlHandId = hand.id;
+      controlHandActive = true;
+      if (fist || fingersExtended == 1) {
+        count += 1;
+        var linkURL = $('li.hover a', main_menu).attr('href');
+        console.log(linkURL, $('li.hover', main_menu));
+        if (count > 50)
+          window.location.href = linkURL
+        if (linkURL !== undefined && linkURL !== "#" && !goneAway) window.location.href = linkURL;
+        goneAway = true;
+        fingersExtended = 0;
+      }
+
+
+
+      if (fingersExtended == 5) {
+        
+        if (hand.palmNormal[2] > 0.2 && mover == 1) {
+          mover = 0;
+          setPos(selectedOption + 1)
+        }
+        if (hand.palmNormal[2] < -0.4 && mover == 1) {
+          mover = 0;
+          setPos(selectedOption - 1)
+        }
+
+        if (hand.palmNormal[2] < 0.2 && hand.palmNormal[2] > -0.4) {
+          mover = 1;
+        }
+        
+        
+
+        count = 0;
+        $('li', main_menu).removeClass("hover").removeClass("fadeIn");
+
+        if (selectedOption !== lastSelectedOption) {
+          $('li a', main_menu).css("font-size", "");
+          $('li:nth-child(' + selectedOption + ') a', main_menu).addClass("fadeIn").css("font-size", "4em");
+          $('li:nth-child(' + lastSelectedOption + ') a', main_menu).addClass("fadeOut");
+          if ($("li", main_menu).length > 8 && selectedOption > 0 && selectedOption < $("li", main_menu).length - 1) {
+            $('#main_menu').css("top", (50 - (10 * selectedOption) - (menu_middle)) + "%");
+            if (selectedOption > 0) { $('li:nth-child(' + (selectedOption - 1) + ') a', main_menu).css("font-size", "3.5em"); }
+            if (selectedOption > 1) { $('li:nth-child(' + (selectedOption - 2) + ') a', main_menu).css("font-size", "2.5em"); }
+            if (selectedOption < $("li", main_menu).length) { $('li:nth-child(' + (selectedOption + 1) + ') a', main_menu).css("font-size", "3.5em"); }
+            if (selectedOption < $("li", main_menu).length - 1) { $('li:nth-child(' + (selectedOption + 2) + ') a', main_menu).css("font-size", "2.5em"); }
+          }
+        }
+        $('li:nth-child(' + selectedOption + ')', main_menu).addClass("hover");
+      }
+      //console.log(controlHandId, controlHandActive);
+      //console.log(hand.palmNormal, hand.palmPosition, hand.palmVelocity);
+      //hand.palmPosition[0] LEFT RIGHT (x)
+      //hand.palmPosition[1] UP DOWN (z)
+      //hand.palmPosition[1] FORWARD BACKWARD (y)
+      //console.log(hand.palmPosition[0], hand.palmPosition[1]);
+     
+
+    }
+  })
+    .use('handHold')
+    .use('handEntry')
+
+</script>
+
+</html>
