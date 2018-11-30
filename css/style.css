@@ -1,0 +1,16 @@
+
+#welcome-page { 
+    background-image: url('../images/welcome-background.gif');
+    background-color: black;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center; 
+    background-position-y: 30%;
+    overflow: hidden;
+}
+
+
+
+h3{
+    font-family: 'Roboto', sans-serif;
+}

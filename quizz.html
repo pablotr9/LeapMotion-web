@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <title>Bernarda Alba</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        html,
+        body {
+            background-color: rgb(12, 12, 12);
+        }
+    </style>
+</head>
+
+<body>
+    <button id="empezar-cuenta">empezar cuenta</button>
+    <div class="container">
+        <div class="row" style=" padding-top: 10px; text-align: center; color:rgb(131, 131, 131);">
+            <h1>Quizz</h1>
+            <h3>Tiempo: <span id="count" style="color:red;">10</span> Aciertos: <span id="aciertos" style="color:green;">0</span>
+                Fallos: <span id="fallos" style="color:red">0</span> </h3>
+            <h3></h3>
+            <h2 style="color:white;" id="pregunta">Cierre el puño para comenzar</h2>
+        </div>
+
+        <div class="row">
+            <div class="col-md-1"></div>
+
+            <div class="col-md-4" id="respuesta1" style="padding-top: 80px; text-align: center; vertical-align: middle;color: white; background-color:rgba(131, 131, 131,0.4);height: 200px;border-radius: 5px;">
+                <h1 style="margin-top:-60px; font-size: 120px;">1</h1>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-4" id="respuesta2" style="padding-top: 80px; text-align: center; vertical-align: middle;color: white; background-color:rgba(131, 131, 131,0.4);height: 200px;border-radius: 5px;">
+                <h1 style="margin-top:-60px; font-size: 120px;">2</h1>
+            </div>
+
+
+            <div class="col-md-1"></div>
+
+        </div>
+        <div style="margin-top:20px;"></div>
+        <div class="row">
+            <div class="col-md-1"></div>
+
+            <div class="col-md-4" id="respuesta3" style="padding-top: 80px; text-align: center; vertical-align: middle;color: white; background-color:rgba(131, 131, 131,0.4);height: 200px;border-radius: 5px;">
+                <h1 style="margin-top:-60px; font-size: 120px;">3</h1>
+            </div>
+
+            <div class="col-md-2"></div>
+
+            <div class="col-md-4" id="respuesta4" style="padding-top: 80px; text-align: center; vertical-align: middle;color: white; background-color:rgba(131, 131, 131,0.4);height: 200px;border-radius: 5px;">
+                <h1 style="margin-top:-60px; font-size: 120px;">4</h1>
+            </div>
+
+
+            <div class="col-md-1"></div>
+
+        </div>
+
+
+
+    </div>
+
+
+
+    <script>
+        var current_question = 1;
+        var current_answer = 1;
+        var aciertos = 0;
+        var fallos = 0;
+        var clickable = 1;
+        var questions = {
+            "1": "¿Quién es el autor de la obra de La Casa de Bernarda Alba?",
+            "2": "¿Cuántas hijas tiene Bernarda?"
+        }
+        var answers = {
+            "1": "Federico Garcia Lorca",
+            "2": "5"
+        }
+        var displayed_answers = {
+            "1": ["Federico Garcia Lorca", "Pablo Torres Rosel", "Rafael Alberti", "Luis Cernuda"],
+            "2": ["2", "3", "4", "5"]
+        }
+
+
+        function setPregunta() {
+            var pregunta = document.getElementById("pregunta");
+            pregunta.innerHTML = questions[current_question];
+
+            var q1 = document.getElementById("respuesta1");
+            q1.innerHTML = '<h3>' + displayed_answers[current_question][0] + '</h3>';
+
+
+            var q2 = document.getElementById("respuesta2");
+            q2.innerHTML = '<h3>' + displayed_answers[current_question][1] + '</h3>';
+
+            var q3 = document.getElementById("respuesta3");
+            q3.innerHTML = '<h3>' + displayed_answers[current_question][2] + '</h3>';
+
+            var q4 = document.getElementById("respuesta4");
+            q4.innerHTML = '<h3>' + displayed_answers[current_question][3] + '</h3>';
+
+        }
+
+
+
+        $(document).ready(function () {
+            $("#empezar-cuenta").click(function () {
+                setPregunta();
+                var counter = 3;
+
+                if (clickable == 1) {
+                    clickable = 0; // pa no empezar otra ronda antes de acabar esta
+
+                    setInterval(function () {
+                        counter--;
+                        if (counter >= 0) {
+                            span = document.getElementById("count");
+                            span.innerHTML = counter;
+
+
+                            // ejemplo pa marcar de color la respuesta q selecciona
+                            var q4 = document.getElementById("respuesta" + current_answer);
+                            q4.style.backgroundColor = "rgba(255, 255, 255,0.4)";
+
+                        }
+                        if (counter === 0) {
+                            console.log("ya");
+                            clickable = 1;
+
+                            for (i = 1; i < 5; i++) {
+                                var tmp = document.getElementById("respuesta" + i);
+                                console.log(tmp.style.backgroundColor);
+                                if (tmp.style.backgroundColor == "rgba(255, 255, 255, 0.4)") {
+                                    console.log("");
+                                    if (tmp.innerHTML == '<h3>' + answers[current_question] + '</h3>') {
+                                        aciertos += 1;
+                                        var aciert = document.getElementById("aciertos");
+                                        aciert.innerHTML = aciertos;
+                                    } else {
+                                        fallos += 1;
+                                        var aciert = document.getElementById("fallos");
+                                        aciert.innerHTML = fallos;
+                                    }
+
+                                }
+                            }
+
+                            current_question += 1;
+                            clearInterval(counter);
+
+                        }
+
+                    }, 1000);
+
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

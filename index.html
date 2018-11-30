@@ -1,4 +1,5 @@
 <html>
+
 <head>
   <title>Touch Free BAS</title>
   <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet">
@@ -42,7 +43,21 @@
       height: 100%;
       position: relative;
       z-index: 10;
-      background: #9b9b9b;
+      background: rgb(32, 32, 32);
+
+      background-image: url('./images/titulo-menu.gif');
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-position: center;
+      background-position-y: 10%;
+      overflow: hidden;
+    }
+
+    .info {
+      border-radius: 50%;
+      margin-top: 2%;
+      margin-left: 10px;
+      width: 14%;
     }
 
     #rendererDiv {
@@ -52,7 +67,7 @@
       min-width: 250px;
       min-height: 250px;
       border: 1px solid black;
-      background-color: #ebebeb;
+      background-color: rgb(32, 32, 32);
     }
 
     canvas {
@@ -68,11 +83,11 @@
       height: 100%;
       z-index: 100;
       background: black;
-      background: -moz-linear-gradient(top, #9b9b9b 0%, gray 20%, black 100%);
+      background: -moz-linear-gradient(top, rgb(32, 32, 32) 0%, rgb(11, 11, 11) 20%, black 100%);
       /* FF3.6-15 */
-      background: -webkit-linear-gradient(top, #9b9b9b 0%, gray 20%, black 100%);
+      background: -webkit-linear-gradient(top, rgb(32, 32, 32) 0%, rgb(11, 11, 11) 20%, black 100%);
       /* Chrome10-25,Safari5.1-6 */
-      background: linear-gradient(to bottom, #9b9b9b 0%, gray 20%, black 100%);
+      background: linear-gradient(to bottom, rgb(32, 32, 32) 0%, rgb(11, 11, 11) 20%, black 100%);
       /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
       filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#9b9b9b', endColorstr='gray', GradientType=0);
       /* IE6-9 */
@@ -123,27 +138,112 @@
       animation-name: fadeOut;
       animation-duration: 1s;
     }
+
+    #snackbar {
+      visibility: hidden;
+      min-width: 250px;
+      background-color: rgba(65, 65, 65, 0.5);
+      color: #fff;
+      text-align: center;
+      border-radius: 2px;
+      padding: 16px;
+      position: fixed;
+      z-index: 1;
+      width: 100%;
+      bottom: 30px;
+    }
+
+    #snackbar.show {
+      visibility: visible;
+      -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+      animation: fadein 0.5s, fadeout 0.5s 7.5s;
+    }
+
+    @-webkit-keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadein {
+      from {
+        bottom: 0;
+        opacity: 0;
+      }
+
+      to {
+        bottom: 30px;
+        opacity: 1;
+      }
+    }
+
+    @-webkit-keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeout {
+      from {
+        bottom: 30px;
+        opacity: 1;
+      }
+
+      to {
+        bottom: 0;
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
 <body>
   <div id="huecoArriba">
+
+
     <div id="main_menu">
       <ul>
-        <li><a href="vistaImagenes.html">Prueba1</a></li>
-        <li><a href="#2">Prueba2</a></li>
-        <li><a href="#3">Prueba3</a></li>
+        <li><a href="vistaImagenes.html">Ver casa virtual</a></li>
+        <li><a href="quizz.html">¡Juega al quizz!</a></li>
+        <li><a href="bernarda.html">Habla con Bernarda</a></li>
+        <li><a href="informacion.html">Información</a></li>
+        <button onclick="myFunction()">Hacer invisible y "clickar" cuando no haga na</button>
+
+        <div id="snackbar">
+          <div class="snack-text">Con la mano abierta, mueve los dedos de arriba a abajo para elegir la opción.</div>
+          <div class="snack-text"><img src="images/icon-hand2.png" width=120 /> </div>
+        </div>
+
       </ul>
     </div>
   </div>
 </body>
+
 
 <script>
   Number.prototype.map = function (in_min, in_max, out_min, out_max) {
     return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
 
-  
+  function myFunction() {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 8000);
+  }
+
+
   var isFullscreen = false;
   var main_menu = null;
   var menu_middle = 0;
@@ -156,15 +256,15 @@
   var goneAway = false;
   var mover = 1;
 
-  function setPos(num){
-    if(num <= 3 && num >= 1){
+  function setPos(num) {
+    if (num <= 3 && num >= 1) {
       selectedOption = num;
     }
   }
 
-  
 
- 
+
+
   let count = 0;
   Leap.loop({ background: true }, {
     hand: function (hand) {
@@ -194,7 +294,7 @@
 
 
       if (fingersExtended == 5) {
-        
+
         if (hand.palmNormal[2] > 0.2 && mover == 1) {
           mover = 0;
           setPos(selectedOption + 1)
@@ -207,8 +307,8 @@
         if (hand.palmNormal[2] < 0.2 && hand.palmNormal[2] > -0.4) {
           mover = 1;
         }
-        
-        
+
+
 
         count = 0;
         $('li', main_menu).removeClass("hover").removeClass("fadeIn");
@@ -233,7 +333,7 @@
       //hand.palmPosition[1] UP DOWN (z)
       //hand.palmPosition[1] FORWARD BACKWARD (y)
       //console.log(hand.palmPosition[0], hand.palmPosition[1]);
-     
+
 
     }
   })

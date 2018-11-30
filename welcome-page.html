@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+  <title>Bernarda Alba</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+    crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+</head>
+
+<body id="welcome-page" ">
+
+    <button id="primero"> 1</button>
+    <button id="segundo"> 2</button>
+    <button id="tercero"> 3</button>
+    <button id="cuarto"> 4</button>
+  <div class=" container" id="informacion" style=" margin-top:27%; display:none;">
+  <div class="row">
+    <div class="col-6 col-md-4"></div>
+
+    <div class="col-6 col-md-4">
+      <div id=" info-manos" style="text-align: center; margin-bottom: -20px;">
+        <img src="images/mano.png" width=200 /> </div>
+    </div>
+  </div>
+
+  <div class="row" style="text-align: center; ">
+    <img src="images/coloca-mano.gif" />
+  </div>
+  </div>
+
+
+  <div class="container" id="informacion2" style=" margin-top:27%; display:none;">
+    <div class="row">
+      <div class="col-4 col-md-4" style="text-align: center; padding-top:30px;">
+          <img src="images/hand.png" width=75 />
+          <img src="images/hand.png" width=75 />
+
+          <h3>Coloca dos manos en el sensor</h3>
+      </div>
+
+      <div class="col-4 col-md-4">
+      </div>
+      <div class="col-4 col-md-4">
+      </div>
+    </div>
+    <div class="row" style="text-align: center; ">
+        <h3 style="color:white;">Comprobando funcionamiento correcto del sensor</h3>
+    </div>
+  </div>
+
+
+
+  <div class="container" id="informacion3" style=" margin-top:27%; display:none;">
+      <div class="row">
+        <div class="col-4 col-md-4" style="text-align: center; padding-top:30px;">
+           
+        </div>
+  
+        <div class="col-4 col-md-4" style="text-align: center; padding-top:0px;">
+          <img src="images/icon-hand2.png" width=150/>
+          
+          <h3>Sube y baja la mano derecha</h3>
+        </div>
+        <div class="col-4 col-md-4">
+        </div>
+      </div>
+      <div class="row" style="text-align: center; ">
+          <h3 style="color:white;">Comprobando funcionamiento correcto del sensor</h3>
+      </div>
+    </div>
+
+
+    <div class="container" id="informacion4" style=" margin-top:27%; display:none;">
+        <div class="row">
+          <div class="col-4 col-md-4" style="text-align: center; padding-top:30px;">
+             
+          </div>
+    
+          <div class="col-4 col-md-4" >
+            
+          </div>
+          <div class="col-4 col-md-4" style="text-align: center; padding-top:0px;">
+              <img src="images/fist.png" width=150/>
+            
+              <h3>Cierra el puño para comenzar.</h3>
+          </div>
+        </div>
+        <div class="row" style="text-align: center; ">
+            <h3 style="color:white;">Comprobando funcionamiento correcto del sensor</h3>
+        </div>
+      </div>
+
+  <script>
+
+
+    function showIt() {
+      var prueba = document.getElementById("informacion");
+      $(prueba).fadeIn(2000)
+
+    }
+    setTimeout("showIt()", 1000);
+
+
+    $(document).ready(function () {
+      $("#primero").click(function () {
+        var prueba = document.getElementById("informacion");
+        $(prueba).fadeOut(1000)
+
+
+        var prueba2 = document.getElementById("informacion2");
+        $(prueba2).fadeIn(2000)
+
+
+      });
+    });
+
+    $(document).ready(function () {
+      $("#segundo").click(function () {
+        var prueba = document.getElementById("informacion2");
+        $(prueba).fadeOut(1000)
+
+
+        var prueba2 = document.getElementById("informacion3");
+        $(prueba2).fadeIn(2000)
+
+
+      });
+    });
+
+
+     $(document).ready(function () {
+      $("#tercero").click(function () {
+        var prueba = document.getElementById("informacion3");
+        $(prueba).fadeOut(1000)
+
+
+        var prueba2 = document.getElementById("informacion4");
+        $(prueba2).fadeIn(2000)
+
+
+      });
+    });
+
+
+     $(document).ready(function () {
+      $("#cuarto").click(function () {
+        var prueba = document.getElementById("informacion4");
+        $(prueba).fadeOut(1000);
+        setTimeout(function(){ window.location.href = "index.html"; }, 1000);
+
+
+
+      });
+    });
+
+
+
+  </script>
+
+</body>
+
+</html>
