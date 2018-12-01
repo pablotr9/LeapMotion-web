@@ -1,9 +1,7 @@
 var scene, camera, renderer, mesh;
 var meshFloor;
-var cuenta = 0;
-
-var texture;
-
+var textureloader;
+var elf;
 
 var isFullscreen = false;
 var main_menu = null;
@@ -23,104 +21,153 @@ function setPos(num) {
 	}
 }
 
-var keyboard = {};
-var player = { height: 1.5, speed: 0.1, turnSpeed: Math.PI * 0.02 };
-var USE_WIREFRAME = false;
+var player = { height: 3.3, speed: 0.09, turnSpeed: Math.PI * 0.02 };
+
+function createLights() {
+	scene.add( new THREE.AmbientLight( 0x6f6666 ) );
+	var pointLight = new THREE.PointLight(0xfefefe);
+	pointLight.position.set(0,20,20);
+	scene.add(pointLight);
+}
+
+function createPatio() {
+	elf = new THREE.Object3D();
+	var loadingManager = new THREE.LoadingManager( function () {
+		scene.add( elf );
+	} );
+
+	var loader = new THREE.ColladaLoader( loadingManager );
+	loader.load( './models/patio.dae', function ( collada ) {
+		collada.scene.scale.x = 0.2;
+		collada.scene.scale.y = 0.2;
+		collada.scene.scale.z = 0.2;
+		elf = collada.scene;
+	} );
+}
+
+function checkCollition(x, z) {
+	var check = false;
+	if (z > -8.0 && z <= 0.0) {
+		if (x < 2.30 && x > -5.0) {
+			check = true;
+		}
+	} else if (z < 22.0) {
+		if (x < 13.0 && x > -13.0) {
+			check = true;
+		}
+	}
+	return true;
+}
 
 function init() {
 
-	texture = new THREE.TextureLoader().load( "./textures/checkered.png" );
+	// Inicio de render
+	renderer = new THREE.WebGLRenderer();
+	renderer.setClearColor(new THREE.Color(0xEEEEEE), 1.0);
+	renderer.setSize(window.innerWidth, window.innerHeight);
+	renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+	renderer.shadowMap.enabled = true;
+
+	// Creacion de escena
 	scene = new THREE.Scene();
-	camera = new THREE.PerspectiveCamera(90, 1280 / 720, 0.1, 1000);
+	scene.background = new THREE.Color( 0xcce0ff );
+	scene.fog = new THREE.Fog( 0xcce0ff, 50, 100 );
 
-	
-	mesh = new THREE.Mesh(
-		new THREE.BoxGeometry(1.5, 1.5, 1.5),
-		new THREE.MeshBasicMaterial({ color: 0x2244ff, wireframe: USE_WIREFRAME })
-	);
-	mesh.position.y += 1; // Move the mesh up 1 meter
-	scene.add(mesh);
+	camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 1000);
 
-
-	
-	meshFloor = new THREE.Mesh(
-		new THREE.PlaneGeometry(100, 100, 100, 100),
-		new THREE.MeshBasicMaterial({ color: 0xffffff, wireframe: USE_WIREFRAME })
-	);
-	meshFloor.rotation.x -= Math.PI / 2; // Rotate the floor 90 degrees
-	scene.add(meshFloor);
+	createLights();
+	createPatio();
 
 	camera.position.set(0, player.height, -5);
 	camera.lookAt(new THREE.Vector3(0, player.height, 0));
 
-	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(1280, 720);
 	document.body.appendChild(renderer.domElement);
-
-
-
+	
 	renderer.render(scene, camera);
 
-
-
-
-
-
+	// Movimiento de mano
 	Leap.loop({ background: true }, {
 		hand: function (hand) {
-			
-
-			cuenta += 1;
+			console.log(camera.position)
 			fingersExtended = 0;
 			for (var i = 0; i < 5; i++) {
 				fingersExtended += hand.fingers[i].extended;
 			}
-
-			//console.log(fingersExtended);
+			/*
+			console.log("Fingers extended " + fingersExtended);
+			console.log("PALM NORMAL: " + hand.palmNormal)
+			*/
 
 			if (!fingersExtended) { fist = true; } else { fist = false; }
-
+			//camera.position.y = player.height;
 
 			controlHandId = hand.id;
 			controlHandActive = true;
 			if (fist || fingersExtended == 1) {
 				//--
 			}
+			// LEFT / RIGHT
 
-			mesh.rotation.x += 0.01;
-			mesh.rotation.y += 0.02;
+			if (hand.palmNormal[0] < -0.7 && fingersExtended > 1) {
+				camera.rotation.y += 0.03;
+			} 
 
-			
+			if (hand.palmNormal[0] > 0.7 && fingersExtended > 1) {
+				camera.rotation.y -= 0.03;
+			} 
+
+			// TOP / BOTTTOM
+			//camera.position.y = player.height;
+			/*
+			if (hand.palmNormal[2] < -0.6 && fingersExtended > 1) {
+				//camera.rotation.x -= 0.005;
+				camera.rotateX(0.01)
+			} 
+
+			if (hand.palmNormal[2] > 0.7 && fingersExtended > 1) {
+				//camera.rotation.x += 0.005;
+				camera.rotateX(-0.01)
+			} 
+			*/
+
 			if (hand.palmPosition[2] > 70  && fingersExtended > 1) {	
 				//console.log(hand.palmPosition[2])	
+				/*
 				camera.position.x += Math.sin(camera.rotation.y) * player.speed;
 				camera.position.z += -Math.cos(camera.rotation.y) * player.speed;
-				cuenta = 0;
-
+				*/
+				if (checkCollition(camera.position.x, camera.position.z + player.speed))
+					camera.translateZ(player.speed);
 			}
 
 
 			if (hand.palmPosition[0] < -70  && fingersExtended > 1) {
+				/*
 				camera.position.x += Math.sin(camera.rotation.y + Math.PI/2) * player.speed;
 				camera.position.z += -Math.cos(camera.rotation.y + Math.PI/2) * player.speed;
-				cuenta = 0;
-
+				*/
+				if (checkCollition(camera.position.x - player.speed, camera.position))
+					camera.translateX(-player.speed);
 			}
 
 
 			if (hand.palmPosition[0] > 70  && fingersExtended > 1) {
+				/*
 				camera.position.x += Math.sin(camera.rotation.y - Math.PI/2) * player.speed;
 				camera.position.z += -Math.cos(camera.rotation.y - Math.PI/2) * player.speed;
-				cuenta = 0;
-
+				*/
+				if (checkCollition(camera.position.x + player.speed, camera.position.z))
+					camera.translateX(player.speed);
 			}
 			
 			if (hand. palmPosition[2] < -70  && fingersExtended > 1) {	
 				//console.log(hand.palmPosition[2])		
+				/*
 				camera.position.x -= Math.sin(camera.rotation.y) * player.speed;
 				camera.position.z -= -Math.cos(camera.rotation.y) * player.speed;
-				cuenta = 0;
-
+				*/
+				if (checkCollition(camera.position.x, camera.position.z - player.speed))
+					camera.translateZ(-player.speed);
 			}
 
 			renderer.render(scene, camera);
@@ -134,11 +181,5 @@ function init() {
 	})
 		.use('handHold')
 		.use('handEntry')
-
 }
-
-
-
-
-
 window.onload = init;
