@@ -85,6 +85,19 @@ function init() {
 	
 	renderer.render(scene, camera);
 
+
+	var controller = Leap.loop({enableGestures: true}, function(frame){
+		if(frame.valid && frame.gestures.length > 0){
+		  frame.gestures.forEach(function(gesture){
+			  switch (gesture.type){
+				case "circle":
+					  window.location.href = "index.html"
+					break;
+			  }
+		  });
+		}
+	  });
+
 	// Movimiento de mano
 	Leap.loop({ background: true }, {
 		hand: function (hand) {
@@ -104,7 +117,9 @@ function init() {
 			controlHandId = hand.id;
 			controlHandActive = true;
 			if (fist || fingersExtended == 1) {
-				//--
+				if(camera.position.z > 5 && camera.position.z < 30){
+					window.location.href = "vistaImagenes.html";
+				}
 			}
 			// LEFT / RIGHT
 

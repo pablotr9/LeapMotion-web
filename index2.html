@@ -22,9 +22,26 @@
 			color: white;
 			font-size: 23pt;
 		}
+
+        #info-back-message {
+    min-width: 150px; /* Set a default minimum width */
+    margin-left: -125px; /* Divide value of min-width by 2 */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: 1; /* Add a z-index if needed */
+    left: 15%; /* Center the snackbar */
+    top: 20px; /* 30px from the bottom */
+    opacity: 0.5;
+}
 	
 	</style>
 	<body style="text-align:center;">
+
+			<div id="info-back-message">Haz un circulo para volver atrás.</div>
 		<h1>Museo de Bernarda Alba</h1>
 	</body>
 </html>
