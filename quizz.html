@@ -10,21 +10,167 @@
     <title>Bernarda Alba</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
         crossorigin="anonymous">
+    <script src="leap-0.6.4.js"></script>
+    <script src="lib/leap-plugins-0.1.6.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
         html,
         body {
             background-color: rgb(12, 12, 12);
         }
+
+        #snackbar {
+            visibility: hidden;
+            /* Hidden by default. Visible on click */
+            min-width: 250px;
+            /* Set a default minimum width */
+            margin-left: -125px;
+            /* Divide value of min-width by 2 */
+            background-color: #333;
+            /* Black background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            /* Centered text */
+            border-radius: 2px;
+            /* Rounded borders */
+            padding: 16px;
+            /* Padding */
+            position: fixed;
+            /* Sit on top of the screen */
+            z-index: 1;
+            /* Add a z-index if needed */
+            left: 50%;
+            /* Center the snackbar */
+            bottom: 30px;
+            /* 30px from the bottom */
+        }
+
+
+        #info-message {
+            min-width: 150px;
+            /* Set a default minimum width */
+            margin-left: -125px;
+            /* Divide value of min-width by 2 */
+            background-color: #333;
+            /* Black background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            /* Centered text */
+            border-radius: 2px;
+            /* Rounded borders */
+            padding: 16px;
+            /* Padding */
+            position: fixed;
+            /* Sit on top of the screen */
+            z-index: 1;
+            /* Add a z-index if needed */
+            left: 80%;
+            /* Center the snackbar */
+            top: 20px;
+            /* 30px from the bottom */
+        }
+
+
+        #info-back-message {
+            min-width: 150px;
+            /* Set a default minimum width */
+            margin-left: -125px;
+            /* Divide value of min-width by 2 */
+            background-color: #333;
+            /* Black background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            /* Centered text */
+            border-radius: 2px;
+            /* Rounded borders */
+            padding: 16px;
+            /* Padding */
+            position: fixed;
+            /* Sit on top of the screen */
+            z-index: 1;
+            /* Add a z-index if needed */
+            left: 15%;
+            /* Center the snackbar */
+            top: 20px;
+            /* 30px from the bottom */
+            opacity: 0.5;
+        }
+
+
+        /* Show the snackbar when clicking on a button (class added with JavaScript) */
+        #snackbar.show {
+            visibility: visible;
+            /* Show the snackbar */
+            /* Add animation: Take 0.5 seconds to fade in and out the snackbar. 
+   However, delay the fade out process for 2.5 seconds */
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+
+        /* Animations to fade the snackbar in and out */
+        @-webkit-keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadein {
+            from {
+                bottom: 0;
+                opacity: 0;
+            }
+
+            to {
+                bottom: 30px;
+                opacity: 1;
+            }
+        }
+
+        @-webkit-keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeout {
+            from {
+                bottom: 30px;
+                opacity: 1;
+            }
+
+            to {
+                bottom: 0;
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
-    <button id="empezar-cuenta">empezar cuenta</button>
+    <div id="snackbar">-</div>
+    <div id="info-message">Cierra el puño para comenzar la siguiente pregunta</div>
+    <div id="info-back-message">Haz un circulo para volver atrás.</div>
+
+    <button id="empezar-cuenta" style="display:none;">empezar cuenta</button>
     <div class="container">
         <div class="row" style=" padding-top: 10px; text-align: center; color:rgb(131, 131, 131);">
             <h1>Quizz</h1>
-            <h3>Tiempo: <span id="count" style="color:red;">10</span> Aciertos: <span id="aciertos" style="color:green;">0</span>
+            <h3>Tiempo: <span id="count" style="color:red;">5</span> Aciertos: <span id="aciertos" style="color:green;">0</span>
                 Fallos: <span id="fallos" style="color:red">0</span> </h3>
             <h3></h3>
             <h2 style="color:white;" id="pregunta">Cierre el puño para comenzar</h2>
@@ -73,6 +219,19 @@
 
 
     <script>
+        function snackbar(texto, color) {
+            var x = document.getElementById("snackbar");
+            if (color == 0) {
+                x.style.backgroundColor = "red"
+            } else {
+                x.style.backgroundColor = "green"
+            }
+            x.innerHTML = texto
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+
         var current_question = 1;
         var current_answer = 1;
         var aciertos = 0;
@@ -80,15 +239,18 @@
         var clickable = 1;
         var questions = {
             "1": "¿Quién es el autor de la obra de La Casa de Bernarda Alba?",
-            "2": "¿Cuántas hijas tiene Bernarda?"
+            "2": "¿Cuántas hijas tiene Bernarda?",
+            "3": "¿Quíen es la hija mayor de bernarda?"
         }
         var answers = {
             "1": "Federico Garcia Lorca",
-            "2": "5"
+            "2": "5",
+            "3": "Angustias"
         }
         var displayed_answers = {
             "1": ["Federico Garcia Lorca", "Pablo Torres Rosel", "Rafael Alberti", "Luis Cernuda"],
-            "2": ["2", "3", "4", "5"]
+            "2": ["2", "12", "4", "5"],
+            "3": ["Martirio", "Angustias", "Adela", "Amelia"]
         }
 
 
@@ -113,10 +275,11 @@
 
 
 
+
         $(document).ready(function () {
             $("#empezar-cuenta").click(function () {
                 setPregunta();
-                var counter = 3;
+                var counter = 6;
 
                 if (clickable == 1) {
                     clickable = 0; // pa no empezar otra ronda antes de acabar esta
@@ -128,9 +291,6 @@
                             span.innerHTML = counter;
 
 
-                            // ejemplo pa marcar de color la respuesta q selecciona
-                            var q4 = document.getElementById("respuesta" + current_answer);
-                            q4.style.backgroundColor = "rgba(255, 255, 255,0.4)";
 
                         }
                         if (counter === 0) {
@@ -141,15 +301,17 @@
                                 var tmp = document.getElementById("respuesta" + i);
                                 console.log(tmp.style.backgroundColor);
                                 if (tmp.style.backgroundColor == "rgba(255, 255, 255, 0.4)") {
-                                    console.log("");
+
                                     if (tmp.innerHTML == '<h3>' + answers[current_question] + '</h3>') {
                                         aciertos += 1;
                                         var aciert = document.getElementById("aciertos");
                                         aciert.innerHTML = aciertos;
+                                        snackbar("¡Has acertado!", 1)
                                     } else {
                                         fallos += 1;
                                         var aciert = document.getElementById("fallos");
                                         aciert.innerHTML = fallos;
+                                        snackbar("¡Has fallado!", 0)
                                     }
 
                                 }
@@ -162,6 +324,52 @@
 
                     }, 1000);
 
+                }
+            });
+
+            function setAnswer(num) {
+                var tmp = document.getElementById("respuesta" + 1);
+                tmp.style.backgroundColor = "rgba(131, 131, 131,0.4)";
+                tmp = document.getElementById("respuesta" + 2);
+                tmp.style.backgroundColor = "rgba(131, 131, 131,0.4)";
+                tmp = document.getElementById("respuesta" + 3);
+                tmp.style.backgroundColor = "rgba(131, 131, 131,0.4)";
+                tmp = document.getElementById("respuesta" + 4);
+                tmp.style.backgroundColor = "rgba(131, 131, 131,0.4)";
+                if (num == 1 || num == 2 || num == 3 || num == 4) {
+                    tmp = document.getElementById("respuesta" + num);
+                    tmp.style.backgroundColor = "rgba(255, 255, 255,0.4)";
+                }
+            }
+
+            Leap.loop({ background: true, enableGestures: true }, {
+                hand: function (hand) {
+                    fingersExtended = 0;
+                    for (var i = 0; i < 5; i++) {
+                        fingersExtended += hand.fingers[i].extended;
+                    }
+
+                    if (!fingersExtended) {
+                        $("#empezar-cuenta").trigger('click');
+                    }
+
+                    setAnswer(fingersExtended)
+
+                }
+            })
+                .use('handHold')
+                .use('handEntry')
+
+
+            var controller = Leap.loop({ enableGestures: true }, function (frame) {
+                if (frame.valid && frame.gestures.length > 0) {
+                    frame.gestures.forEach(function (gesture) {
+                        switch (gesture.type) {
+                            case "circle":
+                                window.location.href = "index.html"
+                                break;
+                        }
+                    });
                 }
             });
         });
