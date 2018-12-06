@@ -91,6 +91,8 @@ function init() {
 		  frame.gestures.forEach(function(gesture){
 			  switch (gesture.type){
 				case "circle":
+
+				if(gesture.radius > 35)
 					  window.location.href = "index.html"
 					break;
 			  }
@@ -117,9 +119,22 @@ function init() {
 			controlHandId = hand.id;
 			controlHandActive = true;
 			if (fist || fingersExtended == 1) {
-				if(camera.position.z > 5 && camera.position.z < 30){
-					window.location.href = "vistaImagenes.html";
+				if(camera.position.z > 0.5 && camera.position.z < 22){
+					window.location.href = "vistaImagenes.html?habitacion=Patio";
 				}
+
+				if(camera.position.z > 22 && camera.position.z < 50){
+					window.location.href = "vistaImagenes.html?habitacion=Habitacion1";
+				}
+			}
+
+
+			if(camera.position.z > 0.5 && camera.position.z < 22){
+				document.getElementById("info-message").innerHTML = "<p>Estas en el <strong>Patio</strong></p><p> Si quieres ver imágenes reales sobre el y su información, <br> <strong>cierra el puño</strong>"
+			}
+
+			if(camera.position.z > 22 && camera.position.z < 50){
+				document.getElementById("info-message").innerHTML = "<p>Estas en la <strong>Habitacion 1</strong></p><p> Si quieres ver imágenes reales sobre el y su información, <br> <strong>cierra el puño</strong>"
 			}
 			// LEFT / RIGHT
 

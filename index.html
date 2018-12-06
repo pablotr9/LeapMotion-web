@@ -1,7 +1,7 @@
 <html>
 
 <head>
-  <title>Touch Free BAS</title>
+  <title>Menu</title>
   <link href="https://fonts.googleapis.com/css?family=Ubuntu:700" rel="stylesheet">
   <script src="leap-0.6.4.js"></script>
   <script src="lib/leap-plugins-0.1.6.js"></script>
@@ -215,12 +215,12 @@
     <div id="main_menu">
       <ul>
         <li><a href="index2.html">Ver casa virtual</a></li>
-        <li><a href="quizz.html">¡Juega al quizz!</a></li>
+        <li><a href="quizz.html">Jugar al quizz</a></li>
         <li><a href="bernarda.html">Habla con Bernarda</a></li>
-        <li><a href="informacion.html">Información</a></li>
-        <button onclick="myFunction()">Hacer invisible y "clickar" cuando no haga na</button>
+        <li><a href="informacion.html">Informacion</a></li>
+        <button onclick="myFunction()" style="display:none;">Hacer invisible y "clickar" cuando no haga na</button>
 
-        <div id="snackbar">
+        <div id="snackbar" >
           <div class="snack-text">Con la mano abierta, mueve los dedos de arriba a abajo para elegir la opción.</div>
           <div class="snack-text"><img src="images/icon-hand2.png" width=120 /> </div>
         </div>
@@ -235,11 +235,12 @@
   Number.prototype.map = function (in_min, in_max, out_min, out_max) {
     return (this - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
   }
+  myFunction();
 
   function myFunction() {
     var x = document.getElementById("snackbar");
     x.className = "show";
-    setTimeout(function () { x.className = x.className.replace("show", ""); }, 8000);
+    setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
   }
 
 

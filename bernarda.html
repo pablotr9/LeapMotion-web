@@ -36,6 +36,9 @@
             max-width: 400px;
             padding: 15px;
             position: relative;
+            overflow-y:hidden;
+
+            max-height: 300px;
         }
 
         .speech-bubble p {
@@ -49,6 +52,7 @@
             content: "";
             position: absolute;
             left: 20px;
+            max-height: 200px;
         }
 
         .bubble3 {
@@ -58,19 +62,33 @@
             content: "";
             position: absolute;
             right: 20px;
+            max-height: 200px;
         }
 
         #info-back-message {
     min-width: 150px; /* Set a default minimum width */
-    margin-left: -125px; /* Divide value of min-width by 2 */
     background-color: #333; /* Black background color */
     color: #fff; /* White text color */
     text-align: center; /* Centered text */
     border-radius: 2px; /* Rounded borders */
     padding: 16px; /* Padding */
     position: fixed; /* Sit on top of the screen */
-    z-index: 1; /* Add a z-index if needed */
-    left: 15%; /* Center the snackbar */
+    z-index: -1; /* Add a z-index if needed */
+    left: 1%; /* Center the snackbar */
+    top: 20px; /* 30px from the bottom */
+    opacity: 0.5;
+}
+
+  #info-back-message2 {
+    min-width: 150px; /* Set a default minimum width */
+    background-color: #333; /* Black background color */
+    color: #fff; /* White text color */
+    text-align: center; /* Centered text */
+    border-radius: 2px; /* Rounded borders */
+    padding: 16px; /* Padding */
+    position: fixed; /* Sit on top of the screen */
+    z-index: -1; /* Add a z-index if needed */
+    left: 75%; /* Center the snackbar */
     top: 20px; /* 30px from the bottom */
     opacity: 0.5;
 }
@@ -79,13 +97,15 @@
 
 <body>
 
-        <div id="info-back-message">Haz un circulo para volver atrás.</div>
+        <div id="info-back-message">Haz un circulo para volver atras.</div>
+        <div id="info-back-message2">Cierra el puño para hacer una pregunta</div>
+
 
 
     <button id="microfono" style="display:none;">empezar cuenta</button>
 
     <div class="container">
-        <div class="row" style=" padding-top: 10px; text-align: center; color:rgb(184, 184, 184);">
+        <div class="row" style="z-index: 2; padding-top: 10px; text-align: center; color:rgb(184, 184, 184);">
             <h1 style="font-size:55px;">Habla con Bernarda Alba</h1>
         </div>
 
@@ -118,8 +138,8 @@
 
 
 
-    <!-- sound to be played when we click icon => http://soundbible.com/1598-Electronic-Chime.html -->
     <script>
+        var start = 0;
         
         window.SpeechRecognition = window.webkitSpeechRecognition || window.SpeechRecognition;
         const synth = window.speechSynthesis;
@@ -128,13 +148,24 @@
 
         var micro = document.getElementById('#microfono')
 
+        var recognizing = false;
+
+        recognition.onstart = function () {
+            recognizing = true;
+        };
+
+        recognition.onend = function () {
+            recognizing = false;
+        };
+
+        recognition.onerror = function (event) {
+            recognizing = false;
+        };
+
 
 
         $(document).ready(function () {
             $("#microfono").click(function () {
-
-
-
 
                 console.log($("#prueba"))
                 dictate();
@@ -170,6 +201,34 @@
                 }
             }
         }
+        
+
+        Leap.loop({ background: true }, {
+    hand: function (hand) {
+
+      fingersExtended = 0;
+      for (var i = 0; i < 5; i++) {
+        fingersExtended += hand.fingers[i].extended;
+      }
+      if(fingersExtended > 3){
+          start = 1;
+      }
+      if(start == 1){
+      var amISpeaking = synth.speaking;
+      //console.log(recognition)
+      // comprueba si esta escuchando o hablando  para solo iniciar la escucha nueva cuando ha acabado la anterior
+      if(!fingersExtended && !amISpeaking && !recognizing ){
+          $("#microfono").trigger('click');
+          recognizing = true;
+      }
+
+      }
+
+
+    }
+  })
+    .use('handHold')
+    .use('handEntry')
 
 
         var controller = Leap.loop({enableGestures: true}, function(frame){
@@ -177,6 +236,7 @@
     frame.gestures.forEach(function(gesture){
         switch (gesture.type){
           case "circle":
+            if(gesture.radius > 35)
                 window.location.href = "index.html"
               break;
         }

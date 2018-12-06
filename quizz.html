@@ -98,6 +98,31 @@
             /* 30px from the bottom */
             opacity: 0.5;
         }
+        #info-back-message3 {
+            min-width: 150px;
+            /* Set a default minimum width */
+            margin-left: -125px;
+            /* Divide value of min-width by 2 */
+            background-color: rgb(22, 22, 22);
+            /* Black background color */
+            color: #fff;
+            /* White text color */
+            text-align: center;
+            /* Centered text */
+            border-radius: 2px;
+            /* Rounded borders */
+            padding: 16px;
+            /* Padding */
+            position: fixed;
+            /* Sit on top of the screen */
+            z-index: 1;
+            /* Add a z-index if needed */
+            left: 15%;
+            /* Center the snackbar */
+            top: 80px;
+            /* 30px from the bottom */
+            opacity: 0.5;
+        }
 
 
         /* Show the snackbar when clicking on a button (class added with JavaScript) */
@@ -165,6 +190,7 @@
     <div id="snackbar">-</div>
     <div id="info-message">Cierra el puño para comenzar la siguiente pregunta</div>
     <div id="info-back-message">Haz un circulo para volver atrás.</div>
+    <div id="info-back-message3">Elige la respuesta con tus dedos.</div>
 
     <button id="empezar-cuenta" style="display:none;">empezar cuenta</button>
     <div class="container">
@@ -278,6 +304,7 @@
 
         $(document).ready(function () {
             $("#empezar-cuenta").click(function () {
+                if(current_question <= 3){
                 setPregunta();
                 var counter = 6;
 
@@ -325,6 +352,8 @@
                     }, 1000);
 
                 }
+                    
+                }
             });
 
             function setAnswer(num) {
@@ -366,6 +395,8 @@
                     frame.gestures.forEach(function (gesture) {
                         switch (gesture.type) {
                             case "circle":
+
+            if(gesture.radius > 35)
                                 window.location.href = "index.html"
                                 break;
                         }
